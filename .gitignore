@@ -1,5 +1,9 @@
 # ignore all pyc
 *.pyc
 
-# especial directories
-__\w+__
+# special directories
+__pycache__/
+
+#ignore all js and css ( for now )
+*.js
+*.css
