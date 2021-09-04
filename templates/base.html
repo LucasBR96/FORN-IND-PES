@@ -1,5 +1,5 @@
 {% load static %}
-{% load humanize %}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +17,43 @@
     </style>
 </head>
 
-<body class="barra">
+<body class="barra" style = "background-color: black;">
+
+    <div class = "container mb-3" style= "background-color: yellow;">
+        <div class = "row text-center d-flex align-items-center">
+            <div class = "col-4"></div>
+            <div class = "col-4">
+                <h2 class = "mb-1">Cesar & Cesar</h2>
+                <h5>Materia prima industrial</h5>
+            </div>
+            <div class = "col-4"></div>
+        </div>
+    </div>
+
+    <div id="container" class="container" style = "background-color: white;">
+        <form>
+            <div class="form-group">
+            </div>
+
+            <div class = "row mb-2">
+
+                <div class = "col-12">
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Categoria</label>
+                        <select class="form-control" id="exampleFormControlSelect1">
+                            <option>---</option>
+                            {% for cat in catg_list %}
+                                <option class = "filtra_produto" id = "{{ cat }}"> {{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                </div>
+
+            </div>
+          </form>
+    </div>
 
     <script src="{% static 'js/jquery-3.4.1.js' %}"></script>
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
