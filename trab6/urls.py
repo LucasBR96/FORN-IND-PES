@@ -19,5 +19,6 @@ from trab6 import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.base, name = "base_dummy" )
+    path('', views.base_dummy, name = "base_dummy" ),
+    path( 'add_produto/' , views.add_produto , name = "add_produto" )
 ]
