@@ -17,43 +17,97 @@
     </style>
 </head>
 
-<body class="barra" style = "background-color: black;">
+<body class="barra">
 
-    <div class = "container mb-3" style= "background-color: yellow;">
-        <div class = "row text-center d-flex align-items-center">
-            <div class = "col-4"></div>
-            <div class = "col-4">
-                <h2 class = "mb-1">Cesar & Cesar</h2>
-                <h5>Materia prima industrial</h5>
+    <h2>Cadastro de produto</h2>
+    <hr>
+
+    <form>
+        <div class = "row form-group">
+            <div class = "col-2">
+                <label for="inputCategoria">Categoria</label>
             </div>
-            <div class = "col-4"></div>
+            <div class = "col-10">
+                <select class="form-control" id="inputCategoria" placeholder = "Escolha uma categoria">
+                    {{% for cat in catg_list %}}
+                        <option>{{ cat }}</option>
+                    {{% endfor %}}
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div id="container" class="container" style = "background-color: white;">
-        <form>
-            <div class="form-group">
+        <div class = "row form-group">
+            <div class = "col-2">
+                <label for="inputNome">Nome</label>
             </div>
-
-            <div class = "row mb-2">
-
-                <div class = "col-12">
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Categoria</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option>---</option>
-                            {% for cat in catg_list %}
-                                <option class = "filtra_produto" id = "{{ cat }}"> {{ cat }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                
-                </div>
-
+            <div class = "col-10">
+                <input class="form-control" id = "inputNome">
             </div>
-          </form>
-    </div>
+        </div>
+
+        <div class = "row form-group">
+            <div class = "col-2">
+                <label for="inpuPreco">Preço</label>
+            </div>
+            <div class = "col-10">
+                <input class="form-control" id = "inputPreco">
+            </div>
+        </div>
+
+        <div class = "row form-group">
+            <div class = "col-2">
+                <label for="inputNome">Quantidade</label>
+            </div>
+            <div class = "col-10">
+                <input class="form-control" id = "inputQuantidade">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-2">Adicionar</button>
+
+    </form>
+
+    <h3>Cadastro de produto</h3>
+    <hr>
+    <table class = "table table-border table-stripped">
+
+        <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Categoria</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Quantidade</th>
+              <th scope="col">Preço</th>
+              <th scope="col">Operação</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {{% for i , prod in prod_list }}
+                <tr>
+                    <th scope="row">{{ i }}</th>
+                    <td>{{ prod.cater }}</td>
+                    <td>{{ prod.nome }}</td>
+
+                    <td>
+                        <input class="form-control modif-inpt" id = " 'inupt_' {{ i }}" placeholder="{{ prod.qtd }}">
+                    </td>
+
+                    <td>{{ prod.preco }}</td>
+
+                    <td>
+                        <button id = " 'remove_botao' {{ i }}" class="btn btn-danger mb-2">Remover</button>
+                    </td>
+                </tr>
+            {{% endfor %}}
+
+            <tr>
+                <th scope="row">Total</th>
+                <td colspan="5">{{ soma_preco }}</td>
+                <td>@twitter</td>
+            </tr>
+        </tbody>
+    </table>
 
     <script src="{% static 'js/jquery-3.4.1.js' %}"></script>
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
