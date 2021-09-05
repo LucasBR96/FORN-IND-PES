@@ -1,13 +1,14 @@
 from django.db import models
 from categoria.models import Categoria
 from collections import namedtuple
+from django import forms
 
 render_tup = namedtuple( 'render_tup' , ['nome','cater','preco','ratio','modo_venda', 'desc' , 'img'] )
-
+table_tup = namedtuple( 'table_tup' , ['nome','cater','preco', 'qtd' ] )
 class Produto( models.Model ):
 
-    nome = models.CharField( max_length = 50 , unique = True ,blank = False )
-    slug = models.SlugField( max_length = 50 , unique = True )
+    nome = models.CharField( max_length = 50 ,blank = False )
+    slug = models.SlugField( max_length = 50 )
 
     cater = models.ForeignKey( Categoria , on_delete = models.CASCADE )
 
@@ -24,9 +25,10 @@ class Produto( models.Model ):
     #  _____________________________________________________________   +
     # total = R$ 8729,64 
      
-    preco      = models.FloatField( blank = False , default = 0 )
-    ratio      = models.FloatField( blank = False , default = 0.1 )
-    modo_venda = models.IntegerField( blank = False , default = 0 )
+    preco      = models.FloatField( blank = False, default = 0 )
+    quantidade = models.IntegerField( blank = False , default = 0)
+    ratio      = models.FloatField( default = 0.1 )
+    modo_venda = models.IntegerField( default = 0 )
 
     class __Meta__:
         db_table = 'produto'
@@ -52,3 +54,24 @@ class Produto( models.Model ):
         desc = 'static/desc/' + nome + '.txt'
 
         return render_tup( nome, cater, preco, ratio, modo_venda, desc, img )
+    
+    def get_tabular_Info( self ):
+
+        nome = self.nome
+        cater = self.cater.nome
+        preco = self.preco
+        qtd   = self.quantidade
+
+
+        return table_tup( nome, cater, preco, qtd )
+    
+class ProdutoForm( forms.Form ):
+    
+        class Meta:
+            model = Produto
+            fields = ( 'nome' , 'preco' , 'cater', 'quantidade' )
+        
+        cater = forms.CharField( label = "inputCategoria")
+        nome = forms.CharField( label = "inputNome" , max_length = 100 )
+        preco = forms.CharField( label = "inputPreco")
+        quantidade = forms.CharField( label = "inputQuantidade")

@@ -1,12 +1,41 @@
 from django.shortcuts import render
 from categoria.models import Categoria
-from produto.models import Produto
-from produto.forms import ProdutoForm
+from produto.models import Produto , ProdutoForm
 from django.http.response import JsonResponse
+
+def get_preco_total():
+
+    seq = Produto.objects.all()
+    foo = lambda x : x.preco*x.qtd
+    return sum( map( foo , list( seq ) ) )
 
 def add_produto( request ):
 
-    print( request.POST)
+    form = ProdutoForm( request.POST )
+    print( form )
+
+    if form.is_valid():
+
+        nome = form.cleaned_data[ 'nome' ]
+        slug = nome.lower()
+        cater = form.cleaned_data[ 'cater' ]
+        qtd = form.cleaned_data[ 'quantidade' ]
+        preco = float( form.cleaned_data[ 'preco' ] )
+
+        prod = Produto(
+            cater = Categoria.objects.get( nome = cater ),
+            nome = nome,
+            slug = slug,
+            preco = preco,
+            quantidade = qtd
+        )
+        prod.save()
+        
+        return JsonResponse( { 
+            "prod":prod.get_tabular_info(), 
+            "novo_preco": get_preco_total() } )
+    else:
+        raise ValueError( "Ih, alguma coisa deu errado")
  
 
 def base_dummy( request ):
@@ -20,16 +49,13 @@ def base_dummy( request ):
 
     prods = []
     for prod in Produto.objects.all( ).order_by('nome'):
-        prods.append( prod.get_render_tup() )
+        prods.append( prod.get_tabular_info() )
     render_items[ 'prod_list' ] = enumerate( prods , start = 1 )
     
-    foo = lambda x : x.preco
-    render_items[ 'soma_preco' ]  = sum( map( foo , prods ) )
+    render_items[ 'soma_preco' ]  = get_preco_total()
 
     return render(request, 'base.html' , render_items )
 
-
-    
 
 def base( request ):
 

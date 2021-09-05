@@ -23,7 +23,7 @@
         <h2>Cadastro de produto</h2>
         <hr>
 
-        <form class = "mb-2" id = "form"
+        <form class = "mb-2" id = "produtoForm"
         action = "add_produto/"
         method = "POST" novalidate>
 
@@ -52,7 +52,7 @@
 
             <div class = "row form-group">
                 <div class = "col-2">
-                    <label for="inpuPreco">Preço</label>
+                    <label for="inputPreco">Preço</label>
                 </div>
                 <div class = "col-10">
                     <input class="form-control" id = "inputPreco">
@@ -61,14 +61,14 @@
 
             <div class = "row form-group">
                 <div class = "col-2">
-                    <label for="inputNome">Quantidade</label>
+                    <label for="inputQuantidade">Quantidade</label>
                 </div>
                 <div class = "col-10">
                     <input class="form-control" id = "inputQuantidade">
                 </div>
             </div>
             
-            <button type = "submit" class="btn btn-primary mb-2">Adicionar</button>
+            <button type = "submit" class="btn btn-primary mb-2" id = "sub-btn">Adicionar</button>
             
 
         </form>
@@ -91,7 +91,7 @@
             <tbody>
                 {% for i , prod in prod_list %}
                     <tr>
-                        <th scope="row">{{ i }}</th>
+                        <th scope="row" style = "display: none;">{{ i }}</th>
                         <td>{{ prod.cater }}</td>
                         <td>{{ prod.nome }}</td>
 
@@ -99,17 +99,20 @@
                             <input class="form-control modif-inpt" id = "inupt_{{ i }}" placeholder="{{ prod.qtd }}">
                         </td>
 
-                        <td>{{ prod.preco }}</td>
+                        <td>R$ {{ prod.preco | floatformat:2 | intcomma }}</td>
 
                         <td>
-                            <button id = " remove_botao_{{ i }}" class="btn btn-danger mb-2">Remover</button>
+                            <button id = "remove_botao_{{ i }}" class="btn btn-danger mb-2">Remover</button>
                         </td>
                     </tr>
                 {% endfor %}
 
                 <tr>
-                    <th scope="row">Total</th>
-                    <td colspan="5">{{ soma_preco }}</td>
+                    <th scope="row" style = "display: none;"></th>
+                    <td>Preço total</td>
+                    <td colspan="2"></td>
+                    <td>R$ {{ soma_preco | floatformat:2 | intcomma }}</td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
