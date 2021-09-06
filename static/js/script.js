@@ -15,7 +15,6 @@ $("button#sub-btn").click( function( event ){
             console.log( resposta );
 
             let prod = resposta.prod;
-            // let prod_rm = resposta.prod_rm
             let s = `                    
                 <tr = "linhaNum${ prod[4] }}">
                     <th scope="row" style = "display: none;">${ prod[4] }</th>
@@ -27,9 +26,11 @@ $("button#sub-btn").click( function( event ){
                     </td>
 
                     <td>R$ ${ prod[2] }</td>
-
                     <td>
-                        <button class="btn btn-danger mb-2 btn-rmv">Remover</button>
+                        <form action="remove_prod/" method="POST">
+                            <input type="hidden" name="id_rmv" value="${ prod[4] }" id="id_id_rmv">
+                            <button class="btn btn-danger mb-2 btn-rmv">Remover</button>
+                        </form>
                     </td>
                 </tr>
                 `

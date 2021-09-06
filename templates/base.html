@@ -93,17 +93,17 @@
                         <td>{{ prod.nome }}</td>
 
                         <td>
-                            <form action = "modifica_prod/" method = "POST" >
+                            <form action = "modifica_prod/" method = "POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="id" value="{{ prod.id }}">
+                                <input type="hidden" name="id" value="{{ prod.idt }}" required = "">
                                 <input type="text"  name = "quantidade" value="{{ prod.qtd }}" class="form-control new-qtd" required="">
-                            <form>
+                            </form>
                         </td>
 
                         <td>R$ {{ prod.preco | floatformat:2 | intcomma }}</td>
 
                         <td>
-                            <form action = "remove_prod/" method = "POST" >
+                            <form action = "remove_prod/" method = "POST">
                                 {% csrf_token %}
                                 {{ rm }}
                                 <button class="btn btn-danger mb-2 btn-rmv">Remover</button>
