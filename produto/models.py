@@ -1,10 +1,12 @@
+from typing import Text
 from django.db import models
+from django.forms.widgets import TextInput
 from categoria.models import Categoria
 from collections import namedtuple
 from django import forms
 
 render_tup = namedtuple( 'render_tup' , ['nome','cater','preco','ratio','modo_venda', 'desc' , 'img'] )
-table_tup = namedtuple( 'table_tup' , ['nome','cater','preco', 'qtd' ] )
+table_tup = namedtuple( 'table_tup' , ['nome','cater','preco', 'qtd', 'idt'] )
 class Produto( models.Model ):
 
     nome = models.CharField( max_length = 50 ,blank = False )
@@ -55,23 +57,71 @@ class Produto( models.Model ):
 
         return render_tup( nome, cater, preco, ratio, modo_venda, desc, img )
     
-    def get_tabular_Info( self ):
+    def get_tabular_info( self ):
 
-        nome = self.nome
+        nome  = self.nome
         cater = self.cater.nome
         preco = self.preco
         qtd   = self.quantidade
+        idt   = self.id
+
+        return table_tup( nome, cater, preco, qtd, idt )
 
 
-        return table_tup( nome, cater, preco, qtd )
-    
 class ProdutoForm( forms.Form ):
     
         class Meta:
             model = Produto
             fields = ( 'nome' , 'preco' , 'cater', 'quantidade' )
         
-        cater = forms.CharField( label = "inputCategoria")
-        nome = forms.CharField( label = "inputNome" , max_length = 100 )
-        preco = forms.CharField( label = "inputPreco")
-        quantidade = forms.CharField( label = "inputQuantidade")
+        cater = forms.ModelChoiceField( 
+            label = "inputCategoria",
+            error_messages = { "required": "Campo Obrigatório" },
+            queryset = Categoria.objects.all().order_by( 'nome' ),
+            empty_label = "--- Selecione ---",
+            widget = forms.Select( attrs = {"class" : "form-control" , "id":"inputCategoria" } )
+        )
+
+        nome = forms.CharField( 
+            label = "inputNome", 
+            max_length = 100,
+            error_messages = { "required": "Campo Obrigatório" },
+            widget = forms.TextInput( attrs = { "class" : "form-control" , "id":"inputNome"} ) )
+        
+        preco = forms.CharField( 
+            label = "inputPreco", 
+            max_length = 10,
+            error_messages = { "required": "Campo Obrigatório" },
+            widget = forms.TextInput( attrs = { "class" : "form-control" , "id":"inputPreco"} ) )
+        
+        quantidade = forms.CharField( label = "inputQuantidade",
+            max_length = 5,
+            error_messages = { "required": "Campo Obrigatório" },
+            widget = forms.TextInput( attrs = { "class" : "form-control" , "id":"inputQuantidade"} ) )
+
+class ProdutoRemoveForm( forms.Form ):
+
+    class Meta:
+        fields = ( 'id_rmv' )
+    
+    id_rmv = forms.CharField(
+        required = True,
+        widget = forms.HiddenInput()
+    )
+
+class ProdutoQuantidadeForm( forms.Form ):
+
+    class Meta:
+        fields = ( 'id' , 'quantidade' )
+    
+    id = forms.CharField(
+        required = True,
+        widget = forms.HiddenInput()
+    )
+
+    quantidade = forms.CharField(
+        required = True,
+        widget = forms.TextInput( attrs = {
+            "class":"form-control",
+        })
+    )

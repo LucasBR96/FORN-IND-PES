@@ -20,5 +20,7 @@ from trab6 import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.base_dummy, name = "base_dummy" ),
-    path( 'add_produto/' , views.add_produto , name = "add_produto" )
+    path( 'add_produto/' , views.add_produto , name = "add_produto" ),
+    path( 'remove_prod/', views.remove_prod , name = 'remove_prod'),
+    path( 'modifica_prod/', views.atualiza_quantidade , name = 'atualiza_quantidade')
 ]
