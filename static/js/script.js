@@ -47,28 +47,43 @@ $(".btn-rmv").click( function( event ){
 
     event.preventDefault();
 
-    let linha = $( this ).parent().parent().parent();
-    let form = $( this ).parent();
+    let form = $( this ).prev()
     let url  = $( form ).attr( 'action' );
+    let data = $( form ).serializeArray();
 
-    let formData = form.serializeArray();
+    let linha = $( this ).parent().parent();
+
     $.post(
-        url,
-        formData,
+        url, data,
         function( resposta ){
-            $(linha).fadeTo( 'fast' , 0.3 , function(){
-                $(linha).hide();
 
-                let val = resposta.preco;
-                $( "#final-price" ).text( "R$ " + val );
-            })
-        })
+            if( resposta.valid ){
+                $(linha).fadeTo( 'fast' , 0.3 , function(){ 
+                    // $( linha ).hide();
+                    $( linha ).remove(); 
+                } );
+                changeLineColors( linha );
+                    
+                let val = resposta.preco_final;
+                $( "#final-price" ).text( val );
+            }
+    })
 
 })
+
+changeLineColors = function( linha ){
+    console.log( linha )
+}
 
 $(".new-qtd").focusout( function( event ){
     event.preventDefault();
 
+    let linha = $( this );
+    let qtd   = $( linha ).val();
+    // let ph    = $( linha ).attr("placeholder")
+    if ( qtd == "" )
+        return
+    
     let form = $(this).parent();
     let url  = $( form ).attr( 'action' );
     let formData = form.serializeArray();
@@ -77,8 +92,18 @@ $(".new-qtd").focusout( function( event ){
         url,
         formData,
         function( resposta ){
-                let val = resposta.preco;
-                $( "#final-price" ).text( "R$ " + val );
+
+                console.log( resposta )
+
+                if( !resposta.valid ){
+                    $( linha ).val( "" );
+                    return;
+                }
+
+                $( linha ).attr("placeholder", qtd );
+                $( linha ).val( "" );
+                let val = resposta.preco_final;
+                $( "#final-price" ).text( val );
             }
         )
     }

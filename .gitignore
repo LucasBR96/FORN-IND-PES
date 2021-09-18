@@ -7,3 +7,6 @@ __pycache__/
 #ignore all js and css ( for now )
 *.js
 *.css
+
+#ignore all zip
+*.zip

@@ -86,7 +86,7 @@
             </thead>
 
             <tbody id = "tb" >
-                {% for prod , rm , qtd in prod_list %}
+                {% for prod in prod_list %}
                     <tr id = "linhaNum{{ prod.idt }}">
                         <th scope="row" style = "display: none;">{{ prod.idt }}</th>
                         <td>{{ prod.cater }}</td>
@@ -95,19 +95,19 @@
                         <td>
                             <form action = "modifica_prod/" method = "POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="id" value="{{ prod.idt }}" required = "">
-                                <input type="text"  name = "quantidade" value="{{ prod.qtd }}" class="form-control new-qtd" required="">
+                                <input type = "number" class = "d-none" name = "idt" value = "{{ prod.idt }}" >
+                                <input type="text" name = "quantidade" placeholder="{{ prod.qtd }}" class="form-control new-qtd" required="">
                             </form>
                         </td>
 
-                        <td>R$ {{ prod.preco | floatformat:2 | intcomma }}</td>
+                        <td>{{ prod.preco }}</td>
 
                         <td>
-                            <form action = "remove_prod/" method = "POST">
+                            <form class = "d-none" action = "remove_prod/" method = "POST">
                                 {% csrf_token %}
-                                {{ rm }}
-                                <button class="btn btn-danger mb-2 btn-rmv">Remover</button>
+                                <input type = "number" name = "idt" value = "{{ prod.idt }}" >
                             </form>
+                                <button class="btn btn-danger mb-2 btn-rmv">Remover</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -118,7 +118,7 @@
                     <th scope="row" style = "display: none;"></th>
                     <td>Preço total</td>
                     <td colspan="2"></td>
-                    <td id = "final-price">R$ {{ soma_preco | floatformat:2 | intcomma }}</td>
+                    <td id = "final-price">{{ soma_preco  }}</td>
                     <td></td>
                 </tr>
             </tfoot>

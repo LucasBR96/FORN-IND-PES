@@ -2,12 +2,13 @@ from django.shortcuts import render
 from categoria.models import Categoria
 from produto.models import Produto , ProdutoForm , ProdutoRemoveForm, ProdutoQuantidadeForm
 from django.http.response import JsonResponse
+from utils import format_br_currency as fbr
 
 def get_preco_total():
 
     seq = Produto.objects.all()
     foo = lambda x : x.preco*x.quantidade
-    return sum( map( foo , list( seq ) ) )
+    return fbr( sum( map( foo , list( seq ) ) ) )
 
 def add_produto( request ):
 
@@ -44,25 +45,37 @@ def add_produto( request ):
 def remove_prod( request ):
 
     seq = ProdutoRemoveForm( request.POST )
-    seq.is_valid()
-    prod_id = seq.cleaned_data[ 'id_rmv' ]
-    item = Produto.objects.get( id = prod_id )
-    item.delete()
+    print( seq )
 
-    preco = get_preco_total()
-    return JsonResponse({ "preco" : preco })
+    resp = { "valid" : False }
+    if seq.is_valid():
+        
+        resp[ 'valid' ] = True
+
+        prod_id = seq.cleaned_data[ 'idt' ]
+        item = Produto.objects.get( id = prod_id )
+        item.delete()
+
+        resp[ 'preco_final' ] = get_preco_total()
+    return JsonResponse( resp )
 
 def atualiza_quantidade( request ):
 
     seq = ProdutoQuantidadeForm( request.POST )
-    seq.is_valid()
-    prod_id = seq.cleaned_data[ 'id' ]
-    item = Produto.objects.get( id = prod_id )
-    item.quantidade = int( seq.cleaned_data[ 'quantidade' ])
-    item.save()
+    # print( seq )
 
-    preco = get_preco_total()
-    return JsonResponse({ "preco" : preco })
+    resp = { "valid" : False }
+    if seq.is_valid():
+        
+        resp[ 'valid' ] = True
+
+        prod_id = seq.cleaned_data[ 'idt' ]
+        item = Produto.objects.get( id = prod_id )
+        item.quantidade = int( seq.cleaned_data[ 'quantidade' ])
+        item.save()
+
+        resp[ 'preco_final' ] = get_preco_total()
+    return JsonResponse( resp )
 
 def base_dummy( request ):
 
@@ -72,10 +85,7 @@ def base_dummy( request ):
     prods = []
     for prod in Produto.objects.all( ).order_by('nome'):
         info = prod.get_tabular_info()
-        rm   = ProdutoRemoveForm( initial = { "id_rmv":prod.id } )
-        qtd  = ProdutoQuantidadeForm( initial = { "id":prod.id , "quantidade":prod.quantidade } )
-
-        prods.append( ( info , rm , qtd ) )
+        prods.append( info )
         
     render_items[ 'prod_list' ] = prods
     render_items[ 'soma_preco' ]  = get_preco_total()

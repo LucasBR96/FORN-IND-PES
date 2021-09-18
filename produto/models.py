@@ -2,8 +2,10 @@ from typing import Text
 from django.db import models
 from django.forms.widgets import TextInput
 from categoria.models import Categoria
-from collections import namedtuple
 from django import forms
+
+from collections import namedtuple
+from utils import format_br_currency as fbr
 
 render_tup = namedtuple( 'render_tup' , ['nome','cater','preco','ratio','modo_venda', 'desc' , 'img'] )
 table_tup = namedtuple( 'table_tup' , ['nome','cater','preco', 'qtd', 'idt'] )
@@ -61,7 +63,7 @@ class Produto( models.Model ):
 
         nome  = self.nome
         cater = self.cater.nome
-        preco = self.preco
+        preco = fbr( self.preco )
         qtd   = self.quantidade
         idt   = self.id
 
@@ -102,9 +104,9 @@ class ProdutoForm( forms.Form ):
 class ProdutoRemoveForm( forms.Form ):
 
     class Meta:
-        fields = ( 'id_rmv' )
+        fields = ( 'idt' )
     
-    id_rmv = forms.CharField(
+    idt = forms.IntegerField(
         required = True,
         widget = forms.HiddenInput()
     )
@@ -112,9 +114,9 @@ class ProdutoRemoveForm( forms.Form ):
 class ProdutoQuantidadeForm( forms.Form ):
 
     class Meta:
-        fields = ( 'id' , 'quantidade' )
+        fields = ( 'idt' , 'quantidade' )
     
-    id = forms.CharField(
+    idt = forms.IntegerField(
         required = True,
         widget = forms.HiddenInput()
     )
