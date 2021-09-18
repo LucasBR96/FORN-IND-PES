@@ -87,6 +87,7 @@
 
             <tbody id = "tb" >
                 {% for prod in prod_list %}
+
                     <tr id = "linhaNum{{ prod.idt }}">
                         <th scope="row" style = "display: none;">{{ prod.idt }}</th>
                         <td>{{ prod.cater }}</td>
@@ -110,7 +111,9 @@
                                 <button class="btn btn-danger mb-2 btn-rmv">Remover</button>
                         </td>
                     </tr>
+                    
                 {% endfor %}
+
             </tbody>
 
             <tfoot>

@@ -2,46 +2,70 @@
 $("button#sub-btn").click( function( event ){
     
     event.preventDefault();
-    $.post(
-        // -------------------------------------------
-        //Ação 
-        'add_produto/',
+    // $.post(
+    //     // -------------------------------------------
+    //     //Ação 
+    //     'add_produto/',
 
-        // --------------------------------------------
-        // O que será enviado para o servidor 
-        $("#produtoForm").serializeArray(),
+    //     // --------------------------------------------
+    //     // O que será enviado para o servidor 
+    //     $("#produtoForm").serializeArray(),
 
-        function( resposta ){
-            console.log( resposta );
+    //     function( resposta ){
+    //         if( resposta.valid ){
+    //             console.log( resposta );
+    //             novaLinha( resposta );
 
-            let prod = resposta.prod;
-            let s = `                    
-                <tr = "linhaNum${ prod[4] }}">
-                    <th scope="row" style = "display: none;">${ prod[4] }</th>
-                    <td>${ prod[1] }</td>
-                    <td>${ prod[0] }</td>
+    //             $("#inputCategoria").val("");
+    //             $("#inputPreco").val("");
+    //             $("#inputQuantidade").val("");
+    //             $("#inputNome").val("");
 
-                    <td>
-                        <input class="form-control modif-inpt" id = "" placeholder="${ prod[ 3 ] }">
-                    </td>
+    //             let val = resposta.novo_preco;
+    //             $( "#final-price" ).text( val );
 
-                    <td>R$ ${ prod[2] }</td>
-                    <td>
-                        <form action="remove_prod/" method="POST">
-                            <input type="hidden" name="id_rmv" value="${ prod[4] }" id="id_id_rmv">
-                            <button class="btn btn-danger mb-2 btn-rmv">Remover</button>
-                        </form>
-                    </td>
-                </tr>
-                `
-            $("tbody").append( s );
+    //             addToken( resposta.idt );
+    //         }
+    //     }
+    // )
 
-            let val = resposta.novo_preco;
-            $( "#final-price" ).text( "R$ " + val );
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            console.log( cookie );
         }
-    );
+    }
 
 } )
+
+novaLinha = function( resposta ){
+    let s = `                    
+    <tr id = "linhaNum${ resposta.idt }">
+        <th scope="row" style = "display: none;">${ resposta.idt }</th>
+        <td>${ resposta.cater }</td>
+        <td>${ resposta.nome }</td>
+
+        <td>
+            <form action = "modifica_prod/" method = "POST">
+                <input type = "number" class = "d-none" name = "idt" value = "${ resposta.idt }" >
+                <input type="text" name = "quantidade" placeholder="${ resposta.qtd }" class="form-control new-qtd" required="">
+            </form>
+        </td>
+
+        <td>${ resposta.preco }</td>
+
+        <td>
+            <form class = "d-none" action = "remove_prod/" method = "POST">
+                <input type = "number" name = "idt" value = "${ resposta.idt }" >
+            </form>
+                <button class="btn btn-danger mb-2 btn-rmv">Remover</button>
+        </td>
+    </tr>
+        `
+    $("tbody").append( s );
+}
 
 $(".btn-rmv").click( function( event ){
 

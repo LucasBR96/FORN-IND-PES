@@ -1,8 +1,6 @@
 from typing import Text
 from django.db import models
-from django.forms.widgets import TextInput
 from categoria.models import Categoria
-from django import forms
 
 from collections import namedtuple
 from utils import format_br_currency as fbr
@@ -68,62 +66,3 @@ class Produto( models.Model ):
         idt   = self.id
 
         return table_tup( nome, cater, preco, qtd, idt )
-
-
-class ProdutoForm( forms.Form ):
-    
-        class Meta:
-            model = Produto
-            fields = ( 'nome' , 'preco' , 'cater', 'quantidade' )
-        
-        cater = forms.ModelChoiceField( 
-            label = "inputCategoria",
-            error_messages = { "required": "Campo Obrigatório" },
-            queryset = Categoria.objects.all().order_by( 'nome' ),
-            empty_label = "--- Selecione ---",
-            widget = forms.Select( attrs = {"class" : "form-control" , "id":"inputCategoria" } )
-        )
-
-        nome = forms.CharField( 
-            label = "inputNome", 
-            max_length = 100,
-            error_messages = { "required": "Campo Obrigatório" },
-            widget = forms.TextInput( attrs = { "class" : "form-control" , "id":"inputNome"} ) )
-        
-        preco = forms.CharField( 
-            label = "inputPreco", 
-            max_length = 10,
-            error_messages = { "required": "Campo Obrigatório" },
-            widget = forms.TextInput( attrs = { "class" : "form-control" , "id":"inputPreco"} ) )
-        
-        quantidade = forms.CharField( label = "inputQuantidade",
-            max_length = 5,
-            error_messages = { "required": "Campo Obrigatório" },
-            widget = forms.TextInput( attrs = { "class" : "form-control" , "id":"inputQuantidade"} ) )
-
-class ProdutoRemoveForm( forms.Form ):
-
-    class Meta:
-        fields = ( 'idt' )
-    
-    idt = forms.IntegerField(
-        required = True,
-        widget = forms.HiddenInput()
-    )
-
-class ProdutoQuantidadeForm( forms.Form ):
-
-    class Meta:
-        fields = ( 'idt' , 'quantidade' )
-    
-    idt = forms.IntegerField(
-        required = True,
-        widget = forms.HiddenInput()
-    )
-
-    quantidade = forms.CharField(
-        required = True,
-        widget = forms.TextInput( attrs = {
-            "class":"form-control",
-        })
-    )

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from categoria.models import Categoria
-from produto.models import Produto , ProdutoForm , ProdutoRemoveForm, ProdutoQuantidadeForm
+from produto.models import Produto
+from produto.forms import ProdutoForm , ProdutoRemoveForm, ProdutoQuantidadeForm 
 from django.http.response import JsonResponse
 from utils import format_br_currency as fbr
 
@@ -13,9 +14,10 @@ def get_preco_total():
 def add_produto( request ):
 
     form = ProdutoForm( request.POST )
-
+    resp = { "valid" : False }
     if form.is_valid():
-        print( form )
+        resp[ "valid" ] = True 
+        # print( form )
 
         nome = form.cleaned_data[ 'nome' ]
         slug = nome.lower()
@@ -32,15 +34,16 @@ def add_produto( request ):
         )
 
         prod.save()
-        print( prod.get_tabular_info() )
+        tup = prod.get_tabular_info()
 
-        return JsonResponse( { 
-            "prod":prod.get_tabular_info(), 
-            "novo_preco": get_preco_total()
-            # "prod_rm": ProdutoRemoveForm( initial = { "id_rmv":prod.id } )
-            } )
-    else:
-        raise ValueError( "Ih, alguma coisa deu errado")
+        resp[   "nome"   ] = tup.nome,
+        resp[   "cater"  ] = tup.cater,
+        resp[   "preco"  ] = tup.preco,
+        resp[   "qtd"    ] = tup.qtd,
+        resp[   "idt"    ] = tup.idt,
+        resp["novo_preco"] = get_preco_total()
+        
+    return JsonResponse( resp )
  
 def remove_prod( request ):
 
